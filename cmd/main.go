@@ -2,8 +2,11 @@ package main
 
 import (
 	"coletor-gastos-deputados/data"
+	 "coletor-gastos-deputados/stream"
 	"log"
+	"net/http"
 	"os"
+	"time"
 )
 
 func main() {
@@ -12,11 +15,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dataManager := data.New(homeDir)
-	if err := dataManager.Download(); err != nil {
-		log.Fatal(err)
+	httpClient := &http.Client{
+		Timeout: time.Minute * 2,
 	}
-	if err := dataManager.Extract(); err != nil {
+
+	sm := stream.NewManager()
+	dataManager := data.New(homeDir, httpClient, sm)
+	if err := dataManager.DownloadFile(data.DatasetDownloadURL); err != nil {
 		log.Fatal(err)
 	}
 
