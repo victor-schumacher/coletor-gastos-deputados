@@ -1,82 +1,28 @@
 package main
 
 import (
-	"archive/tar"
-	"compress/gzip"
-	"fmt"
-	"io"
-	"io/ioutil"
+	"coletor-gastos-deputados/data"
+	 "coletor-gastos-deputados/stream"
 	"log"
 	"net/http"
 	"os"
-
+	"time"
 )
 
-const writePermission = 0700
-
-func main(){
-	resp, err := http.Get("https://data.brasil.io/dataset/gastos-deputados/cota_parlamentar.csv.gz")
+func main() {
+	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(resp.StatusCode)
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 
-	if err := ioutil.WriteFile("/home/victor/Projects/coletor-gastos-deputados/test.csv.gz", body, writePermission); err != nil {
-		fmt.Println(err)
+	httpClient := &http.Client{
+		Timeout: time.Minute * 2,
 	}
 
-	r, err := os.Open("/home/victor/Projects/coletor-gastos-deputados/test.csv.gz")
-	if err != nil {
-		fmt.Println("error")
+	sm := stream.NewManager()
+	dataManager := data.New(homeDir, httpClient, sm)
+	if err := dataManager.DownloadFile(data.DatasetDownloadURL); err != nil {
+		log.Fatal(err)
 	}
 
-	ExtractTarGz(r)
-}
-
-func ExtractTarGz(gzipStream io.Reader) {
-	uncompressedStream, err := gzip.NewReader(gzipStream)
-	if err != nil {
-		log.Fatal("ExtractTarGz: NewReader failed")
-	}
-
-	tarReader := tar.NewReader(uncompressedStream)
-
-	for true {
-		header, err := tarReader.Next()
-
-		if err == io.EOF {
-			break
-		}
-
-		if err != nil {
-			log.Fatalf("ExtractTarGz: Next() failed: %s", err.Error())
-		}
-
-		switch header.Typeflag {
-		case tar.TypeDir:
-			if err := os.Mkdir(header.Name, 0755); err != nil {
-				log.Fatalf("ExtractTarGz: Mkdir() failed: %s", err.Error())
-			}
-		case tar.TypeReg:
-			outFile, err := os.Create(header.Name)
-			if err != nil {
-				log.Fatalf("ExtractTarGz: Create() failed: %s", err.Error())
-			}
-			if _, err := io.Copy(outFile, tarReader); err != nil {
-				log.Fatalf("ExtractTarGz: Copy() failed: %s", err.Error())
-			}
-			outFile.Close()
-
-		default:
-			log.Fatalf(
-				"ExtractTarGz: uknown type: %s in %s",
-				header.Typeflag,
-				header.Name)
-		}
-
-	}
 }
