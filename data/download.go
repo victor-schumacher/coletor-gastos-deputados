@@ -31,9 +31,9 @@ func New(
 	}
 }
 
-// DownloadFile downloads a .gz with the data csv stream inside,
-// and write it to home path passed on constructor
-func (m Manager) DownloadFile(downloadURL string) error {
+// DownloadExtract downloads from the URL passed on parameter
+//and extracts it to the constructor path
+func (m Manager) DownloadExtract(downloadURL string) error {
 	resp, err := m.client.Get(downloadURL)
 	if err != nil {
 		return err

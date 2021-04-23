@@ -40,7 +40,7 @@ func TestDownload(t *testing.T) {
 	for _, tt := range table {
 		t.Run(tt.name, func(t *testing.T) {
 			data := New("", tt.client, tt.stream)
-			err := data.DownloadFile(tt.URL)
+			err := data.DownloadExtract(tt.URL)
 
 			if err != nil {
 				assert.EqualError(t, err, tt.wantedError)
