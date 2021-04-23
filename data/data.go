@@ -15,4 +15,3 @@ type Data struct {
 
 type Downloader interface {
 	DownloadExtract(downloadURL string) error
-}
