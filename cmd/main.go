@@ -21,7 +21,7 @@ func main() {
 
 	sm := stream.NewManager()
 	dataManager := data.New(homeDir, httpClient, sm)
-	if err := dataManager.DownloadFile(data.DatasetDownloadURL); err != nil {
+	if err := dataManager.DownloadExtract(data.DatasetDownloadURL); err != nil {
 		log.Fatal(err)
 	}
 
