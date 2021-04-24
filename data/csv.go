@@ -12,14 +12,14 @@ type CSVUnmarshaler interface {
 type CSVManager struct {
 }
 
-func NewCSVManager(){
-	
+func NewCSVManager() CSVManager {
+	return CSVManager{}
 }
 
-func (c CSVManager) UnmarshalCSV(file *os.File) error {
+func (c CSVManager) UnmarshalCSV(file *os.File) ([]*Data, error) {
 	var data []*Data
 	if err := gocsv.UnmarshalFile(file, &data); err != nil {
-		return err
+		return data, err
 	}
-	return nil
+	return data, nil
 }

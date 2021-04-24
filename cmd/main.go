@@ -2,27 +2,36 @@ package main
 
 import (
 	"coletor-gastos-deputados/data"
-	 "coletor-gastos-deputados/stream"
+	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"time"
 )
 
 func main() {
-	homeDir, err := os.UserHomeDir()
+	// homeDir, err := os.UserHomeDir()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	//
+	// httpClient := &http.Client{
+	// 	Timeout: time.Minute * 2,
+	// }
+	//
+	// sm := stream.NewManager()
+	// dataManager := data.New(homeDir, httpClient, sm)
+	// if err := dataManager.DownloadExtract(data.DatasetDownloadURL); err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	csv := data.NewCSVManager()
+	file, err := os.Open("/home/victor/testdata.csv")
 	if err != nil {
-		log.Fatal(err)
+
 	}
 
-	httpClient := &http.Client{
-		Timeout: time.Minute * 2,
+	 d, err := csv.UnmarshalCSV(file);
+	 if err != nil {
+		log.Fatalln(err)
 	}
-
-	sm := stream.NewManager()
-	dataManager := data.New(homeDir, httpClient, sm)
-	if err := dataManager.DownloadExtract(data.DatasetDownloadURL); err != nil {
-		log.Fatal(err)
-	}
-
+	fmt.Println(d[0])
 }
