@@ -1,5 +1,7 @@
 package data
 
+type Datas []Data
+
 type Data struct {
 	Date            string  `csv:"datemissao"`
 	Legislatura     string  `csv:"nulegislatura"`
