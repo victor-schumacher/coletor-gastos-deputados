@@ -3,6 +3,7 @@ package main
 import (
 	"coletor-gastos-deputados/data"
 	"coletor-gastos-deputados/data/csv"
+	"coletor-gastos-deputados/database/postgres"
 	"coletor-gastos-deputados/stream"
 	"fmt"
 	"log"
@@ -12,6 +13,9 @@ import (
 )
 
 func main() {
+	db := postgres.NewPgManager()
+	db.TestConnection()
+
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)

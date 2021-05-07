@@ -10,7 +10,7 @@ create table deputados.gastos (
 	txtdescricao text,
 	txtfornecedor text,
 	vlrliquido float
-)
+);
 
 create index idx_datemissao ON deputados.gastos (datemissao);
 create index idx_sgpartido ON deputados.gastos (sgpartido);
