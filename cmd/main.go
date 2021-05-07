@@ -2,7 +2,9 @@ package main
 
 import (
 	"coletor-gastos-deputados/data"
-	 "coletor-gastos-deputados/stream"
+	"coletor-gastos-deputados/data/csv"
+	"coletor-gastos-deputados/stream"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -25,4 +27,17 @@ func main() {
 		log.Fatal(err)
 	}
 
+	csvManager := csv.NewManager()
+	file, err := os.Open("/home/victor/testdata.csv")
+	if err != nil {
+
+	}
+
+	d, err := csvManager.Unmarshal(file)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	for _, datapoint := range d {
+		fmt.Println(datapoint)
+	}
 }

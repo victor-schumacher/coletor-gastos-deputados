@@ -9,7 +9,7 @@ create table deputados.gastos (
 	txtcnpjcpf text,
 	txtdescricao text,
 	txtfornecedor text,
-	vlrliquido numeric
+	vlrliquido float
 )
 
 create index idx_datemissao ON deputados.gastos (datemissao);
