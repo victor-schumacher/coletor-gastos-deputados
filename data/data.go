@@ -1,8 +1,8 @@
 package data
 
-type Datas []Data
+type Expenses []Expense
 
-type Data struct {
+type Expense struct {
 	Date            string  `csv:"datemissao"`
 	Legislatura     string  `csv:"nulegislatura"`
 	Partido         string  `csv:"sgpartido"`
