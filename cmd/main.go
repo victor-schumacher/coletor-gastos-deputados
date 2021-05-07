@@ -41,7 +41,7 @@ func main() {
 
 	er := repository.NewExpense(db)
 	for _, datapoint := range d {
-		if err := er.Save(datapoint); err != nil {
+		if err :=  er.Save(datapoint); err != nil {
 			fmt.Println(err)
 		}
 	}

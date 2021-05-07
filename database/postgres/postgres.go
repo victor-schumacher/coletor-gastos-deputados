@@ -37,7 +37,8 @@ func (p PgManager) ConnectHandle() *sql.DB {
 		log.Panic(err)
 	}
 	db.SetMaxIdleConns(32)
-	db.SetMaxOpenConns(64)
+	db.SetMaxOpenConns(99999999999)
+
 	db.SetConnMaxIdleTime(time.Minute * 2)
 	return db
 }
