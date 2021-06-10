@@ -4,17 +4,18 @@ create schema deputados;
 
 -- CRIAÇÃO TABELA GASTOS
 
-create table deputados.gastos (
-	id bigserial,
-	datemissao timestamp,
-	nulegislatura text,
-	sgpartido  text,
-	txnomeparlamentar text,
-	txtcnpjcpf text,
-	txtdescricao text,
-	txtfornecedor text,
-	vlrliquido numeric
-)
+create table deputados.gastos
+(
+    id                UUID,
+    datemissao        timestamp,
+    nulegislatura     text,
+    sgpartido         text,
+    txnomeparlamentar text,
+    txtcnpjcpf        text,
+    txtdescricao      text,
+    txtfornecedor     text,
+    vlrliquido        float
+);
 
 create index idx_datemissao ON deputados.gastos (datemissao);
 create index idx_sgpartido ON deputados.gastos (sgpartido);
