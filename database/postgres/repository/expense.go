@@ -1,14 +1,14 @@
 package repository
 
 import (
-	"coletor-gastos-deputados/data"
 	"coletor-gastos-deputados/database"
 
 	"github.com/google/uuid"
 )
 
+
 type Expense interface {
-	Save(expense *data.Expense) error
+	Save(expense database.Expense) error
 }
 
 type ExpenseRepo struct {
@@ -19,7 +19,7 @@ func NewExpense(db database.DBConnection) ExpenseRepo {
 	return ExpenseRepo{db: db}
 }
 
-func (er ExpenseRepo) Save(expense *data.Expense) error {
+func (er ExpenseRepo) Save(expense database.Expense) error {
 	db := er.db.ConnectHandle()
 	defer db.Close()
 	stmt := `INSERT INTO "coletor-gastos".deputados.gastos VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`

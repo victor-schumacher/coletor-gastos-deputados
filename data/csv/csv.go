@@ -1,29 +1,44 @@
 package csv
 
 import (
-	"coletor-gastos-deputados/data"
+	"coletor-gastos-deputados/database"
+	"coletor-gastos-deputados/database/postgres/repository"
+	"fmt"
 	"github.com/gocarina/gocsv"
 	"log"
 	"os"
+	"path/filepath"
 )
 
-type Unmarshaler interface {
-	Unmarshal(file *os.File) ([]*data.Expense, error)
-}
 
-type Manager struct {
-}
 
-func NewManager() Manager {
-	return Manager{}
-}
-
-func (c Manager) Unmarshal(file *os.File) ([]*data.Expense, error) {
-	log.Println("starting csv unmarshal")
-	var d []*data.Expense
-	if err := gocsv.UnmarshalFile(file, &d); err != nil {
-		return d, err
+func Unmarshal(fileName string, repo repository.ExpenseRepo) error {
+	log.Println("starting to read file and csv unmarshal")
+	dir, err := os.UserHomeDir()
+	if err != nil {
+		return err
 	}
-	log.Println("finishing csv unmarshal")
-	return d, nil
+	filePath := filepath.Join(dir, fileName)
+	fileHandle, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	defer fileHandle.Close()
+	c := make(chan database.Expense)
+
+	go func() {
+		err = gocsv.UnmarshalToChan(fileHandle, c)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	for r := range c {
+		err = repo.Save(r); if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println("salvou de boa")
+	}
+
+	return nil
 }

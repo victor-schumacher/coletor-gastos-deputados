@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/codeclysm/extract v2.2.0+incompatible
+	github.com/go-co-op/gocron v1.6.2
 	github.com/gocarina/gocsv v0.0.0-20210408192840-02d7211d929d
 	github.com/google/uuid v1.2.0
 	github.com/gorilla/mux v1.8.0

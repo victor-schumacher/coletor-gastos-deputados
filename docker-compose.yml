@@ -1,12 +1,26 @@
-version: '3.3'
+version: "3.7"
+
 services:
-  postgres:
-    image: postgres:9.6
-    ports:
-      - "5432:5432"
-    volumes:
-      - /var/lib/postgresql/data
+  database:
+    image: postgres
+    restart: always
     environment:
       - POSTGRES_DB=coletor-gastos
       - POSTGRES_USER=devdb
       - POSTGRES_PASSWORD=devdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - database
+    networks:
+      - default
+    ports:
+      - "8080:8080"
+volumes:
+  data:

@@ -23,7 +23,6 @@ func (p PgManager) ConnectHandle() *sql.DB {
 	if databaseURL == "" {
 		log.Fatal("Error: Invalid DATABASE_URL value.")
 	}
-
 	db, err := sql.Open("postgres", databaseURL)
 	if err != nil {
 		log.Panic(err)
