@@ -2,43 +2,69 @@ package cron
 
 import (
 	"coletor-gastos-deputados/data"
-	"coletor-gastos-deputados/data/csv"
-	"coletor-gastos-deputados/database/postgres"
 	"coletor-gastos-deputados/database/postgres/repository"
-	"coletor-gastos-deputados/stream"
+	"fmt"
 	"github.com/go-co-op/gocron"
+	"github.com/gocarina/gocsv"
 	"log"
-	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 )
 
-func Start() {
+type Cron struct {
+	r repository.Manager
+	d data.Downloader
+}
+
+func New(r repository.Manager, d data.Downloader) Cron {
+	return Cron{
+		r: r,
+		d: d,
+	}
+}
+
+func (c Cron) Start() {
 	s := gocron.NewScheduler(time.UTC)
-	if _, err := s.Every(7).Days().Do(sync); err != nil {
+	if _, err := s.Every(7).Days().Do(c.sync); err != nil {
 		log.Println("cannot start cron")
 	}
 	s.StartAsync()
 }
 
-func sync() {
-	db := postgres.NewPgManager()
-	db.TestConnection()
+func (c Cron) sync() {
+	if err := c.d.DownloadExtract(data.DatasetDownloadURL); err != nil {
+		log.Fatal(err)
+	}
 
-	homeDir, err := os.UserHomeDir()
+	log.Println("starting to read file and csv unmarshal")
+	dir, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
-	httpClient := &http.Client{
-		Timeout: time.Minute * 12,
+	filePath := filepath.Join(dir, data.DataFile)
+	fileHandle, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		return
 	}
-	sm := stream.NewManager()
-	dataManager := data.New(homeDir, httpClient, sm)
-	if err := dataManager.DownloadExtract(data.DatasetDownloadURL); err != nil {
-		log.Fatal(err)
-	}
-	expenseRepo := repository.NewExpense(db)
-	if err := csv.Unmarshal(data.DataFile, expenseRepo); err != nil {
-		log.Fatal("here" + err.Error())
+	defer fileHandle.Close()
+	readAndSave(c.r, fileHandle)
+}
+
+func readAndSave(repo repository.Manager, file *os.File) {
+	c := make(chan repository.Expense)
+	go func() {
+		err := gocsv.UnmarshalToChan(file, c)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	for r := range c {
+		err := repo.Save(r)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println("salvou de boa")
 	}
 }

@@ -29,8 +29,8 @@ func (p PgManager) ConnectHandle() *sql.DB {
 	}
 	db.SetMaxIdleConns(32)
 	db.SetMaxOpenConns(64)
-
 	db.SetConnMaxIdleTime(time.Minute * 2)
+
 	return db
 }
 
