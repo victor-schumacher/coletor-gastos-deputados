@@ -10,8 +10,6 @@ import (
 	"path/filepath"
 )
 
-
-
 func Unmarshal(fileName string, repo repository.ExpenseRepo) error {
 	log.Println("starting to read file and csv unmarshal")
 	dir, err := os.UserHomeDir()
@@ -39,6 +37,5 @@ func Unmarshal(fileName string, repo repository.ExpenseRepo) error {
 		}
 		fmt.Println("salvou de boa")
 	}
-
 	return nil
 }

@@ -3,7 +3,7 @@ create schema deputados;
 create table deputados.gastos
 (
     id                UUID,
-    datemissao        timestamp,
+    datemissao        text,
     nulegislatura     text,
     sgpartido         text,
     txnomeparlamentar text,

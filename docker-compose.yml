@@ -12,15 +12,23 @@ services:
       - "5432:5432"
     volumes:
       - data:/var/lib/postgresql/data
+    networks:
+      - local
   server:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=host=database port=5432 user=devdb password=devdb dbname=coletor-gastos sslmode=disable
     depends_on:
       - database
     networks:
-      - default
+      - local
     ports:
       - "8080:8080"
 volumes:
   data:
+
+networks:
+  local:
+    driver: bridge

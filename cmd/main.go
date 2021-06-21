@@ -12,6 +12,8 @@ import (
 
 
 func main() {
+
+
 	cron.Start()
 	r := mux.NewRouter()
 	port := fmt.Sprintf(":%s", os.Getenv("PORT"))

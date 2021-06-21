@@ -22,7 +22,7 @@ func NewExpense(db database.DBConnection) ExpenseRepo {
 func (er ExpenseRepo) Save(expense database.Expense) error {
 	db := er.db.ConnectHandle()
 	defer db.Close()
-	stmt := `INSERT INTO "coletor-gastos".deputados.gastos VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`
+	stmt := `INSERT INTO deputados.gastos VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 
 	id, err := uuid.NewRandom()
 	if err != nil {
