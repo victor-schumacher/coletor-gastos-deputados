@@ -3,6 +3,7 @@ package data
 import (
 	"coletor-gastos-deputados/stream"
 	"errors"
+	"log"
 	"net/http"
 	"path/filepath"
 )
@@ -10,8 +11,9 @@ import (
 const (
 	DatasetDownloadURL = "https://data.brasil.io/dataset/gastos-deputados/cota_parlamentar.csv.gz"
 	DatasetFile        = "data.csv.gz"
-	dataFile           = "data.csv"
+	DataFile           = "data.csv"
 )
+
 
 type Manager struct {
 	homePath string
@@ -34,6 +36,7 @@ func New(
 // DownloadExtract downloads from the URL passed on parameter
 //and extracts it to the constructor path
 func (m Manager) DownloadExtract(downloadURL string) error {
+	log.Println("starting download and extract")
 	resp, err := m.client.Get(downloadURL)
 	if err != nil {
 		return err
@@ -53,10 +56,11 @@ func (m Manager) DownloadExtract(downloadURL string) error {
 		return err
 	}
 
-	pathToExtract := filepath.Join(m.homePath, dataFile)
+	pathToExtract := filepath.Join(m.homePath, DataFile)
 	if err := m.io.FileExtract(fileToExtractPath, pathToExtract); err != nil {
 		return err
 	}
+	log.Println("finishing download and extract")
 
 	return nil
 }

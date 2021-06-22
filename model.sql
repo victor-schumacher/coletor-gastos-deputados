@@ -7,7 +7,7 @@ create schema deputados;
 create table deputados.gastos
 (
     id                UUID,
-    datemissao        timestamp,
+    datemissao        text,
     nulegislatura     text,
     sgpartido         text,
     txnomeparlamentar text,
@@ -125,5 +125,3 @@ select
 from deputados.gastos
 where datemissao >= current_date -10000
 group by 1, 2
-
-

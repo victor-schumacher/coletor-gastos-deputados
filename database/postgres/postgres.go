@@ -2,26 +2,14 @@ package postgres
 
 import (
 	"database/sql"
-	"fmt"
 	_ "github.com/lib/pq"
 	"log"
 	"os"
-	"strconv"
 	"time"
 )
 
-const (
-	driveName         = "postgres"
-	dataSourcePattern = "host=%s port=%d user=%s password=%s dbname=%s sslmode=%s"
-)
-
 var (
-	host     = os.Getenv("DATABASE_HOST")
-	port     = os.Getenv("DATABASE_PORT")
-	dbname   = os.Getenv("DATABASE_NAME")
-	user     = os.Getenv("DATABASE_USER")
-	password = os.Getenv("DATABASE_PASSWORD")
-	sslMode  = os.Getenv("DATABASE_SSL_MODE")
+	databaseURL = os.Getenv("DATABASE_URL")
 )
 
 type PgManager struct {
@@ -32,14 +20,17 @@ func NewPgManager() PgManager {
 }
 
 func (p PgManager) ConnectHandle() *sql.DB {
-	db, err := sql.Open(driveName, p.dataSource())
+	if databaseURL == "" {
+		log.Fatal("Error: Invalid DATABASE_URL value.")
+	}
+	db, err := sql.Open("postgres", databaseURL)
 	if err != nil {
 		log.Panic(err)
 	}
 	db.SetMaxIdleConns(32)
-	db.SetMaxOpenConns(99999999999)
-
+	db.SetMaxOpenConns(64)
 	db.SetConnMaxIdleTime(time.Minute * 2)
+
 	return db
 }
 
@@ -49,13 +40,4 @@ func (p PgManager) TestConnection() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-}
-
-func (p PgManager) dataSource() string {
-	dbPort, err := strconv.Atoi(port)
-	if err != nil {
-		log.Fatal("Error: Invalid DATABASE_PORT value.")
-	}
-
-	return fmt.Sprintf(dataSourcePattern, host, dbPort, user, password, dbname, sslMode)
 }
