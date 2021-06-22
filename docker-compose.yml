@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+  database:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=coletor-gastos
+      - POSTGRES_USER=devdb
+      - POSTGRES_PASSWORD=devdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+    networks:
+      - local
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=host=database port=5432 user=devdb password=devdb dbname=coletor-gastos sslmode=disable
+    depends_on:
+      - database
+    networks:
+      - local
+    ports:
+      - "8080:8080"
+volumes:
+  data:
+networks:
+  local:
+    driver: bridge
