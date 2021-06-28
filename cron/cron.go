@@ -32,9 +32,9 @@ func (c Cron) Start() {
 }
 
 func (c Cron) sync() {
-	//if err := c.d.DownloadExtract(data.DatasetDownloadURL); err != nil {
-	//	log.Fatal(err)
-	//}
+	if err := c.d.DownloadExtract(data.DatasetDownloadURL); err != nil {
+		log.Fatal(err)
+	}
 
 	log.Println("starting to read file and csv unmarshal")
 	dir, err := os.UserHomeDir()
