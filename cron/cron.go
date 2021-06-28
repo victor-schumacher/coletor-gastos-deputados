@@ -3,7 +3,6 @@ package cron
 import (
 	"coletor-gastos-deputados/data"
 	"coletor-gastos-deputados/database/postgres/repository"
-	"fmt"
 	"github.com/go-co-op/gocron"
 	"github.com/gocarina/gocsv"
 	"log"
@@ -33,18 +32,19 @@ func (c Cron) Start() {
 }
 
 func (c Cron) sync() {
-	if err := c.d.DownloadExtract(data.DatasetDownloadURL); err != nil {
-		log.Fatal(err)
-	}
+	//if err := c.d.DownloadExtract(data.DatasetDownloadURL); err != nil {
+	//	log.Fatal(err)
+	//}
 
 	log.Println("starting to read file and csv unmarshal")
 	dir, err := os.UserHomeDir()
 	if err != nil {
-		return
+		log.Fatal(err)
 	}
 	filePath := filepath.Join(dir, data.DataFile)
 	fileHandle, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
+		log.Fatal(err)
 		return
 	}
 	defer fileHandle.Close()
@@ -59,12 +59,18 @@ func readAndSave(repo repository.Manager, file *os.File) {
 			log.Fatal(err)
 		}
 	}()
+	var expenses []repository.Expense
+	for expense := range c {
+		expenses = append(expenses, expense)
+		m := len(expenses) % 500
+		if m == 0 {
+			if err := repo.Save(expenses); err != nil {
+				log.Println(err)
+				return
+			}
+			expenses = nil
+			log.Println("successfully saved")
 
-	for r := range c {
-		err := repo.Save(r)
-		if err != nil {
-			fmt.Println(err)
 		}
-		fmt.Println("salvou de boa")
 	}
 }
