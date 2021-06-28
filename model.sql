@@ -110,13 +110,33 @@ order by 2 desc
 limit 10
 
 
--- Visão agrupada por período de partidos
+-- Soma do valor gasto no período por partidos por mês
+with base_filter as(
 select
-	date_trunc('day', datemissao) as "Data",
-	sgpartido as "Partido",
+	sgpartido,
 	sum(vlrliquido) as "Valor"
-from deputados.gastos
-where datemissao >= current_date -10000
+from gastos
+where
+    datemissao is not null
+    and datemissao <> ''
+    and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
+group by 1
+order by 2 desc
+limit 10
+)
+select
+	date_trunc('month', datemissao::timestamp) as "Data",
+	gastos.sgpartido as "Partido",
+	sum(vlrliquido) as "Valor"
+from gastos
+join base_filter
+    on base_filter.sgpartido = gastos.sgpartido
+where
+    datemissao is not null
+    and datemissao <> ''
+    and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
 group by 1, 2
 order by 1, 2, 3
 
@@ -136,13 +156,33 @@ order by 2 desc
 limit 10
 
 
--- Visão agrupada por período de tipos de gastos
+-- Soma do valor gasto no período por tipos de gasto por mês
+with base_filter as(
 select
-	date_trunc('day', datemissao) as "Data",
-	txtdescricao as "Nome do gasto",
+	txtdescricao,
 	sum(vlrliquido) as "Valor"
-from deputados.gastos
-where datemissao >= current_date -10000
+from gastos
+where
+    datemissao is not null
+    and datemissao <> ''
+    and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
+group by 1
+order by 2 desc
+limit 10
+)
+select
+	date_trunc('month', datemissao::timestamp) as "Data",
+	gastos.txtdescricao as "Nome do gasto",
+	sum(vlrliquido) as "Valor"
+from gastos
+join base_filter
+    on base_filter.txtdescricao = gastos.txtdescricao
+where
+    datemissao is not null
+    and datemissao <> ''
+    and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
 group by 1, 2
 order by 1, 2, 3
 
@@ -162,13 +202,33 @@ order by 2 desc
 limit 10
 
 
--- Visão agrupada por período de fornecedores
+-- Soma do valor recebido no período por fornecedores por mês
+with base_filter as(
 select
-	date_trunc('day', datemissao) as "Data",
-	txtfornecedor as "Nome do fornecedor",
+	txtfornecedor,
 	sum(vlrliquido) as "Valor"
-from deputados.gastos
-where datemissao >= current_date -10000
+from gastos
+where
+    datemissao is not null
+    and datemissao <> ''
+    and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
+group by 1
+order by 2 desc
+limit 10
+)
+select
+	date_trunc('month', datemissao::timestamp) as "Data",
+	gastos.txtfornecedor as "Nome do fornecedor",
+	sum(vlrliquido) as "Valor"
+from gastos
+join base_filter
+    on base_filter.txtfornecedor = gastos.txtfornecedor
+where
+    datemissao is not null
+    and datemissao <> ''
+    and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
 group by 1, 2
 order by 1, 2, 3
 
