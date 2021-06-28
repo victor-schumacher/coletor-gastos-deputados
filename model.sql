@@ -4,8 +4,7 @@ create schema deputados;
 
 -- CRIAÇÃO TABELA GASTOS
 
-create table deputados.gastos
-(
+create table gastos (
     id                UUID,
     datemissao        text,
     nulegislatura     text,

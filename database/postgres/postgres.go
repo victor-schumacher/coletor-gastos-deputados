@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	databaseURL = os.Getenv("DATABASE_URL")
+	databaseURL = os.Getenv("HEROKU_POSTGRESQL_CYAN_URL")
 )
 
 type PgManager struct {

@@ -66,7 +66,6 @@ func readAndSave(repo repository.Manager, file *os.File) {
 		if m == 0 {
 			if err := repo.Save(expenses); err != nil {
 				log.Println(err)
-				return
 			}
 			expenses = nil
 			log.Println("successfully saved")
@@ -74,3 +73,4 @@ func readAndSave(repo repository.Manager, file *os.File) {
 		}
 	}
 }
+

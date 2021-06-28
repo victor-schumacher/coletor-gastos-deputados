@@ -55,7 +55,7 @@ func (er ExpenseRepo) Save(expenses []Expense) error {
 		valueArgs = append(valueArgs, expense.Value)
 	}
 	values := ReplaceSQL(strings.Join(valueStrings, ","), "?")
-	stmt := fmt.Sprintf("INSERT INTO deputados.gastos VALUES %s", values)
+	stmt := fmt.Sprintf("INSERT INTO gastos VALUES %s", values)
 	fmt.Println("sttm " + stmt)
 	if _, err := db.Exec(
 		stmt, valueArgs...
