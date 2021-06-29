@@ -50,7 +50,7 @@ group by 1
 order by 1
 
 
--- Top 10 deputados que mais gastam
+-- Top 10 deputados que mais gastaram
 select
 	txnomeparlamentar as "Deputado",
 	sum(vlrliquido) as "Valor"
@@ -95,7 +95,7 @@ group by 1, 2
 order by 1, 2, 3
 
 
--- Top 10 partidos que mais gastam
+-- Top 10 partidos que mais gastaram
 select
 	sgpartido as "Partido",
 	sum(vlrliquido) as "Valor"
@@ -141,7 +141,7 @@ group by 1, 2
 order by 1, 2, 3
 
 
--- Top 10 tipos de gasto que mais gastam
+-- Top 10 tipos de gasto que mais gastaram
 select
 	txtdescricao as "Nome do gasto",
 	sum(vlrliquido) as "Valor"
@@ -187,7 +187,7 @@ group by 1, 2
 order by 1, 2, 3
 
 
--- Top 10 fornecedor que mais receberam
+-- Top 10 fornecedores que mais receberam
 select
 	txtfornecedor as "Nome do fornecedor",
 	sum(vlrliquido) as "Valor"
