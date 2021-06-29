@@ -3,7 +3,7 @@
 
 ### O que é?
 
-Trata-se de um projeto que nasceu na disciplina de fábrica de _software_ do [Centro universitário católica de Santa Catarina](https://www.catolicasc.org.br/) em Joinville/SC e tem como objetivo a extração de dados de gastos de deputados da base disponibilizada pelo [Brasil.io](https://brasil.io/dataset/gastos-deputados/cota_parlamentar/) e a construção de algumas visões com base nos dados extraídos;
+Trata-se de um projeto que nasceu na disciplina de fábrica de _software_ do [Centro Universitário Católica de Santa Catarina](https://www.catolicasc.org.br/) em Joinville/SC e tem como objetivo a extração de dados de gastos de deputados da base disponibilizada pelo [Brasil.io](https://brasil.io/dataset/gastos-deputados/cota_parlamentar/) e a construção de algumas visões com base nos dados extraído.
 
 
 ### Por quê?
@@ -14,7 +14,7 @@ Para trazer uma visão, ainda que mínima, dos gastos que são registrados pelos
 
 #### Extração de dados:
 
-Através da integração construída utilizando a linguagem de programação [Golang](https://golang.org), extraímos dados dos arquivos _.csv_ disponibilizados pela [Brasil.io](https://brasil.io/dataset/gastos-deputados/cota_parlamentar/) e fazemos o envio para um banco de dados PostgreSQL.
+Através da integração construída utilizando a linguagem de programação [Golang](https://golang.org), extraímos dados dos arquivos _.csv_ disponibilizados pela [Brasil.io](https://brasil.io/dataset/gastos-deputados/cota_parlamentar/) e fazemos o envio para um banco de dados [PostgreSQL](https://www.postgresql.org/).
 
 #### Visões:
 
