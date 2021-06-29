@@ -233,7 +233,7 @@ group by 1, 2
 order by 1, 2, 3
 
 
--- Dispersão dos maiores tipos de gastos X partidos X valores
+-- Dispersão dos maiores tipos de gastos versus partidos
 select
     sgpartido as "Partido",
 	txtdescricao as "Nome do gasto",
