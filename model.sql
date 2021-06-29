@@ -1,9 +1,7 @@
 -- CRIAÇÃO ESQUEMA DEPUTADOS
-
 create schema deputados;
 
 -- CRIAÇÃO TABELA GASTOS
-
 create table gastos (
     id                UUID,
     datemissao        text,
@@ -15,7 +13,6 @@ create table gastos (
     txtfornecedor     text,
     vlrliquido        float
 );
-
 create index idx_datemissao ON deputados.gastos (datemissao);
 create index idx_sgpartido ON deputados.gastos (sgpartido);
 create index idx_txnomeparlamentar ON deputados.gastos (txnomeparlamentar);
@@ -63,6 +60,7 @@ where
 group by 1
 order by 2 desc
 limit 10
+
 
 -- Soma do valor gasto no período por deputados por mês
 with base_filter as(
