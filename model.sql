@@ -233,11 +233,15 @@ group by 1, 2
 order by 1, 2, 3
 
 
--- Dispersão dos maiores gastos X deputados X valores
+-- Dispersão dos maiores tipos de gastos X partidos X valores
 select
+    sgpartido as "Partido",
 	txtdescricao as "Nome do gasto",
-	txnomeparlamentar as "Deputado",
 	sum(vlrliquido) as "Valor"
-from deputados.gastos
-where datemissao >= current_date -10000
+from gastos
+where
+    datemissao is not null
+    and datemissao <> ''
+    and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
 group by 1, 2
