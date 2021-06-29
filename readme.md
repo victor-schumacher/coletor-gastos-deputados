@@ -33,4 +33,4 @@ Conectamos a aplicação [Metabase](https://www.metabase.com/) ao banco de dados
 - [Soma do valor gasto no período por tipos de gasto por mês](https://github.com/victor-schumacher/coletor-gastos-deputados/blob/012d4a234a69b98cc27bed6bf680811d8186bb43/model.sql#L159);
 - [Top 10 fornecedores que mais receberam](https://github.com/victor-schumacher/coletor-gastos-deputados/blob/012d4a234a69b98cc27bed6bf680811d8186bb43/model.sql#L190);
 - [Soma do valor recebido no período por fornecedores por mês](https://github.com/victor-schumacher/coletor-gastos-deputados/blob/012d4a234a69b98cc27bed6bf680811d8186bb43/model.sql#L205);
-- [Dispersão dos maiores tipos de gastos X partidos X valores](https://github.com/victor-schumacher/coletor-gastos-deputados/blob/012d4a234a69b98cc27bed6bf680811d8186bb43/model.sql#L236).
+- [Dispersão dos maiores tipos de gastos _versus_ partidos](https://github.com/victor-schumacher/coletor-gastos-deputados/blob/012d4a234a69b98cc27bed6bf680811d8186bb43/model.sql#L236).
