@@ -233,7 +233,7 @@ order by 1, 2, 3
 
 -- Dispersão dos maiores tipos de gastos versus partidos
 select
-    sgpartido as "Partido",
+	sgpartido as "Partido",
 	txtdescricao as "Nome do gasto",
 	sum(vlrliquido) as "Valor"
 from gastos
