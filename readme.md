@@ -1,1 +1,1 @@
-## [LINK DASHBOARD GASTOS DEPUTADOS BRASIL](https://metabase-catolica-sc.herokuapp.com/public/dashboard/22847b17-113f-4817-82f0-890271bc43ca#theme=night)
+## [LINK DASHBOARD GASTOS DEPUTADOS BRASIL](https://metabase-catolica-sc.herokuapp.com/public/dashboard/22847b17-113f-4817-82f0-890271bc43ca?data_in%25C3%25ADcio=2018-01-01&data_fim=2020-04-30#theme=night)
