@@ -9,8 +9,10 @@ import (
 )
 
 var (
-	databaseURL = os.Getenv("HEROKU_POSTGRESQL_CYAN_URL")
+	databaseURL = os.Getenv("DATABASE_URL")
 )
+
+const BatchSize = 500
 
 type PgManager struct {
 }

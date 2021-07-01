@@ -3,6 +3,7 @@ package repository
 import (
 	"coletor-gastos-deputados/database"
 	"fmt"
+	"github.com/rs/zerolog/log"
 	"strconv"
 	"strings"
 
@@ -22,6 +23,7 @@ type Expense struct {
 
 type Manager interface {
 	Save(expenses []Expense) error
+	Clean() error
 }
 
 type ExpenseRepo struct {
@@ -41,6 +43,7 @@ func (er ExpenseRepo) Save(expenses []Expense) error {
 	for _, expense := range expenses {
 		id, err := uuid.NewRandom()
 		if err != nil {
+			log.Err(err).Msg("generate uuid error, check repository/expense.go")
 			return err
 		}
 		valueStrings = append(valueStrings, "(?, ?, ?, ?, ?, ?, ?, ?, ?)")
@@ -54,19 +57,30 @@ func (er ExpenseRepo) Save(expenses []Expense) error {
 		valueArgs = append(valueArgs, expense.Provider)
 		valueArgs = append(valueArgs, expense.Value)
 	}
-	values := ReplaceSQL(strings.Join(valueStrings, ","), "?")
+	values := replaceSQL(strings.Join(valueStrings, ","), "?")
 	stmt := fmt.Sprintf("INSERT INTO gastos VALUES %s", values)
-	fmt.Println("sttm " + stmt)
 	if _, err := db.Exec(
-		stmt, valueArgs...
+		stmt, valueArgs...,
 	); err != nil {
+		log.Err(err).Msg("query error, check repository/expense.go Save func")
 		return err
 	}
-
+	log.Info().Msgf("successfuly saved expenses")
 	return nil
 }
 
-func ReplaceSQL(old, searchPattern string) string {
+func (er ExpenseRepo) Clean() error {
+	db := er.db.ConnectHandle()
+	defer db.Close()
+	if _, err := db.Exec("TRUNCATE table gastos"); err != nil {
+		log.Err(err).Msg("query error, check repository/expense.go Save func")
+		return err
+	}
+	log.Info().Msgf("successfuly cleaned table gastos")
+	return nil
+}
+
+func replaceSQL(old, searchPattern string) string {
 	tmpCount := strings.Count(old, searchPattern)
 	for m := 1; m <= tmpCount; m++ {
 		old = strings.Replace(old, searchPattern, "$"+strconv.Itoa(m), 1)
