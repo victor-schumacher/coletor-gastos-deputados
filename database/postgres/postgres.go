@@ -12,6 +12,8 @@ var (
 	databaseURL = os.Getenv("DATABASE_URL")
 )
 
+const BatchSize = 500
+
 type PgManager struct {
 }
 

@@ -1,4 +1,4 @@
-package data
+package brasil_io
 
 import (
 	"coletor-gastos-deputados/internal/mock"
@@ -23,7 +23,7 @@ func TestDownload(t *testing.T) {
 			URL:    DatasetDownloadURL,
 		},
 		{
-			name:        "bad request from server",
+			name:        "bad request or internal error from server",
 			client:      mock.BadRequestServer.Client(),
 			URL:         mock.BadRequestServer.URL,
 			stream:      mock.StreamMock{},

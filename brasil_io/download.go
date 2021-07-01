@@ -1,19 +1,23 @@
-package data
+package brasil_io
 
 import (
 	"coletor-gastos-deputados/stream"
 	"errors"
-	"log"
+	"github.com/rs/zerolog/log"
+
 	"net/http"
 	"path/filepath"
 )
 
 const (
-	DatasetDownloadURL = "https://data.brasil.io/dataset/gastos-deputados/cota_parlamentar.csv.gz"
-	DatasetFile        = "data.csv.gz"
-	DataFile           = "data.csv"
+	DatasetDownloadURL = "https://brasil_io.brasil.io/dataset/gastos-deputados/cota_parlamentar.csv.gz"
+	datasetFile        = "brasil_io.csv.gz"
+	DataFile           = "brasil_io.csv"
 )
 
+type Downloader interface {
+	DownloadExtract(downloadURL string) error
+}
 
 type Manager struct {
 	homePath string
@@ -36,7 +40,7 @@ func New(
 // DownloadExtract downloads from the URL passed on parameter
 //and extracts it to the constructor path
 func (m Manager) DownloadExtract(downloadURL string) error {
-	log.Println("starting download and extract")
+	log.Info().Msg("starting download and extract")
 	resp, err := m.client.Get(downloadURL)
 	if err != nil {
 		return err
@@ -51,7 +55,7 @@ func (m Manager) DownloadExtract(downloadURL string) error {
 		return err
 	}
 
-	fileToExtractPath := filepath.Join(m.homePath, DatasetFile)
+	fileToExtractPath := filepath.Join(m.homePath, datasetFile)
 	if err := m.io.FileWrite(fileToExtractPath, body); err != nil {
 		return err
 	}
@@ -60,7 +64,7 @@ func (m Manager) DownloadExtract(downloadURL string) error {
 	if err := m.io.FileExtract(fileToExtractPath, pathToExtract); err != nil {
 		return err
 	}
-	log.Println("finishing download and extract")
+	log.Info().Msg("finishing download and extract")
 
 	return nil
 }
