@@ -1,21 +1,18 @@
 -- CRIAÇÃO ESQUEMA DEPUTADOS
-
 create schema deputados;
 
 -- CRIAÇÃO TABELA GASTOS
-
 create table gastos (
-    id                UUID,
-    datemissao        text,
-    nulegislatura     text,
-    sgpartido         text,
-    txnomeparlamentar text,
-    txtcnpjcpf        text,
-    txtdescricao      text,
-    txtfornecedor     text,
-    vlrliquido        float
+                        id                UUID,
+                        datemissao        text,
+                        nulegislatura     text,
+                        sgpartido         text,
+                        txnomeparlamentar text,
+                        txtcnpjcpf        text,
+                        txtdescricao      text,
+                        txtfornecedor     text,
+                        vlrliquido        float
 );
-
 create index idx_datemissao ON deputados.gastos (datemissao);
 create index idx_sgpartido ON deputados.gastos (sgpartido);
 create index idx_txnomeparlamentar ON deputados.gastos (txnomeparlamentar);
@@ -27,157 +24,222 @@ create index idx_txnomeparlamentar ON deputados.gastos (txnomeparlamentar);
 
 -- Soma do valor gasto no período
 select
-	sum(vlrliquido) as "Valor"
+    sum(vlrliquido) as "Valor"
 from gastos
 where
     datemissao is not null
-    and datemissao <> ''
-    and datemissao::timestamp >= {{data_inicio}}
+  and datemissao <> ''
+  and datemissao::timestamp >= {{data_inicio}}
     and datemissao::timestamp <= {{data_fim}}
-    
-    
+
+
 -- Soma do valor gasto no período por mês
 select
-	date_trunc('month', datemissao::timestamp) as "Data",
-	sum(vlrliquido) as "Valor"
+    date_trunc('month', datemissao::timestamp) as "Data",
+    sum(vlrliquido) as "Valor"
 from gastos
 where
     datemissao is not null
-    and datemissao <> ''
-    and datemissao::timestamp >= {{data_inicio}}
+  and datemissao <> ''
+  and datemissao::timestamp >= {{data_inicio}}
     and datemissao::timestamp <= {{data_fim}}
 group by 1
 order by 1
 
 
--- Top 10 deputados que mais gastam
+-- Top 10 deputados que mais gastaram
 select
-	txnomeparlamentar as "Deputado",
-	sum(vlrliquido) as "Valor"
+    txnomeparlamentar as "Deputado",
+    sum(vlrliquido) as "Valor"
 from gastos
 where
     datemissao is not null
-    and datemissao <> ''
-    and datemissao::timestamp >= {{data_inicio}}
+  and datemissao <> ''
+  and datemissao::timestamp >= {{data_inicio}}
     and datemissao::timestamp <= {{data_fim}}
 group by 1
 order by 2 desc
-limit 10
+    limit 10
+
 
 -- Soma do valor gasto no período por deputados por mês
 with base_filter as(
-select
-	txnomeparlamentar,
-	sum(vlrliquido) as "Valor"
-from gastos
-where
+    select
+    txnomeparlamentar,
+    sum(vlrliquido) as "Valor"
+    from gastos
+    where
     datemissao is not null
     and datemissao <> ''
     and datemissao::timestamp >= {{data_inicio}}
     and datemissao::timestamp <= {{data_fim}}
-group by 1
-order by 2 desc
-limit 10
-)
+    group by 1
+    order by 2 desc
+    limit 10
+    )
 select
-	date_trunc('month', datemissao::timestamp) as "Data",
-	concat(gastos.txnomeparlamentar, ' - ', sgpartido) as "Deputado",
-	sum(vlrliquido) as "Valor"
+    date_trunc('month', datemissao::timestamp) as "Data",
+    concat(gastos.txnomeparlamentar, ' - ', sgpartido) as "Deputado",
+    sum(vlrliquido) as "Valor"
 from gastos
-join base_filter
-    on base_filter.txnomeparlamentar = gastos.txnomeparlamentar
+         join base_filter
+              on base_filter.txnomeparlamentar = gastos.txnomeparlamentar
 where
     datemissao is not null
-    and datemissao <> ''
-    and datemissao::timestamp >= {{data_inicio}}
+  and datemissao <> ''
+  and datemissao::timestamp >= {{data_inicio}}
     and datemissao::timestamp <= {{data_fim}}
 group by 1, 2
 order by 1, 2, 3
 
 
--- Top 10 partidos que mais gastam
+-- Top 10 partidos que mais gastaram
 select
-	sgpartido as "Partido",
-	sum(vlrliquido) as "Valor"
+    sgpartido as "Partido",
+    sum(vlrliquido) as "Valor"
 from gastos
 where
+    datemissao is not null
+  and datemissao <> ''
+  and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
+group by 1
+order by 2 desc
+    limit 10
+
+
+-- Soma do valor gasto no período por partidos por mês
+with base_filter as(
+    select
+    sgpartido,
+    sum(vlrliquido) as "Valor"
+    from gastos
+    where
     datemissao is not null
     and datemissao <> ''
     and datemissao::timestamp >= {{data_inicio}}
     and datemissao::timestamp <= {{data_fim}}
-group by 1
-order by 2 desc
-limit 10
-
-
--- Visão agrupada por período de partidos
+    group by 1
+    order by 2 desc
+    limit 10
+    )
 select
-	date_trunc('day', datemissao) as "Data",
-	sgpartido as "Partido",
-	sum(vlrliquido) as "Valor"
-from deputados.gastos
-where datemissao >= current_date -10000
+    date_trunc('month', datemissao::timestamp) as "Data",
+    gastos.sgpartido as "Partido",
+    sum(vlrliquido) as "Valor"
+from gastos
+         join base_filter
+              on base_filter.sgpartido = gastos.sgpartido
+where
+    datemissao is not null
+  and datemissao <> ''
+  and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
 group by 1, 2
 order by 1, 2, 3
 
 
--- Top 10 tipos de gasto que mais gastam
+-- Top 10 tipos de gasto que mais gastaram
 select
-	txtdescricao as "Nome do gasto",
-	sum(vlrliquido) as "Valor"
+    txtdescricao as "Nome do gasto",
+    sum(vlrliquido) as "Valor"
 from gastos
 where
+    datemissao is not null
+  and datemissao <> ''
+  and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
+group by 1
+order by 2 desc
+    limit 10
+
+
+-- Soma do valor gasto no período por tipos de gasto por mês
+with base_filter as(
+    select
+    txtdescricao,
+    sum(vlrliquido) as "Valor"
+    from gastos
+    where
     datemissao is not null
     and datemissao <> ''
     and datemissao::timestamp >= {{data_inicio}}
     and datemissao::timestamp <= {{data_fim}}
-group by 1
-order by 2 desc
-limit 10
-
-
--- Visão agrupada por período de tipos de gastos
+    group by 1
+    order by 2 desc
+    limit 10
+    )
 select
-	date_trunc('day', datemissao) as "Data",
-	txtdescricao as "Nome do gasto",
-	sum(vlrliquido) as "Valor"
-from deputados.gastos
-where datemissao >= current_date -10000
+    date_trunc('month', datemissao::timestamp) as "Data",
+    gastos.txtdescricao as "Nome do gasto",
+    sum(vlrliquido) as "Valor"
+from gastos
+         join base_filter
+              on base_filter.txtdescricao = gastos.txtdescricao
+where
+    datemissao is not null
+  and datemissao <> ''
+  and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
 group by 1, 2
 order by 1, 2, 3
 
 
--- Top 10 fornecedor que mais receberam
+-- Top 10 fornecedores que mais receberam
 select
-	txtfornecedor as "Nome do fornecedor",
-	sum(vlrliquido) as "Valor"
+    txtfornecedor as "Nome do fornecedor",
+    sum(vlrliquido) as "Valor"
 from gastos
 where
+    datemissao is not null
+  and datemissao <> ''
+  and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
+group by 1
+order by 2 desc
+    limit 10
+
+
+-- Soma do valor recebido no período por fornecedores por mês
+with base_filter as(
+    select
+    txtfornecedor,
+    sum(vlrliquido) as "Valor"
+    from gastos
+    where
     datemissao is not null
     and datemissao <> ''
     and datemissao::timestamp >= {{data_inicio}}
     and datemissao::timestamp <= {{data_fim}}
-group by 1
-order by 2 desc
-limit 10
-
-
--- Visão agrupada por período de fornecedores
+    group by 1
+    order by 2 desc
+    limit 10
+    )
 select
-	date_trunc('day', datemissao) as "Data",
-	txtfornecedor as "Nome do fornecedor",
-	sum(vlrliquido) as "Valor"
-from deputados.gastos
-where datemissao >= current_date -10000
+    date_trunc('month', datemissao::timestamp) as "Data",
+    gastos.txtfornecedor as "Nome do fornecedor",
+    sum(vlrliquido) as "Valor"
+from gastos
+         join base_filter
+              on base_filter.txtfornecedor = gastos.txtfornecedor
+where
+    datemissao is not null
+  and datemissao <> ''
+  and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
 group by 1, 2
 order by 1, 2, 3
 
 
--- Dispersão dos maiores gastos X deputados X valores
+-- Dispersão dos maiores tipos de gastos versus partidos
 select
-	txtdescricao as "Nome do gasto",
-	txnomeparlamentar as "Deputado",
-	sum(vlrliquido) as "Valor"
-from deputados.gastos
-where datemissao >= current_date -10000
+    sgpartido as "Partido",
+    txtdescricao as "Nome do gasto",
+    sum(vlrliquido) as "Valor"
+from gastos
+where
+    datemissao is not null
+  and datemissao <> ''
+  and datemissao::timestamp >= {{data_inicio}}
+    and datemissao::timestamp <= {{data_fim}}
 group by 1, 2
